@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import sys
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -9,9 +11,10 @@ import base64
 from io import BytesIO, StringIO
 from PIL import Image
 import copy
-
-
-import luxpy as lx
+try:
+    import luxpy as lx
+except Exception as e:
+    sys.path.append('../luxpy')
 from luxpy.toolboxes import photbiochem as ph
 from luxpy.toolboxes import iolidfiles as lid 
 
@@ -50,7 +53,7 @@ def load_spectral_data():
     st.sidebar.markdown("### Load spectral data:")
     
     # expander with data format options:
-    expdr_dopts = st.sidebar.beta_expander("Data-format options")
+    expdr_dopts = st.sidebar.expander("Data-format options")
     expdr_dopts.checkbox("Column format", True, key = 'options')
     units = expdr_dopts.selectbox('Units',['W/nm [,.m²,.m².sr, ...]','mW/nm [,.m²,.m².sr, ...]' ])
     unit_factor = 1.0 if units == 'W/nm [,.m²,.m².sr, ...]' else 1/1000
@@ -58,7 +61,7 @@ def load_spectral_data():
     sep = expdr_dopts.selectbox('Separator',[',','\t',';'])
     
     # expander with data loading:
-    expdr_dload = st.sidebar.beta_expander("Upload Spectral Data",True)
+    expdr_dload = st.sidebar.expander("Upload Spectral Data",True)
     uploaded_file = expdr_dload.file_uploader("",accept_multiple_files=False,type=['csv','dat','txt'])
     file_details = {"FileName":'',"FileType":'',"FileSize":''}
     if uploaded_file is not None:
@@ -78,7 +81,7 @@ def load_LID_data():
     st.sidebar.markdown("""---""")
     st.sidebar.markdown("### Load LID data:")
     
-    expdr_dload = st.sidebar.beta_expander("Upload LID (IES/LDT) data file",True)
+    expdr_dload = st.sidebar.expander("Upload LID (IES/LDT) data file",True)
     uploaded_file = expdr_dload.file_uploader("",accept_multiple_files=False,type=['ies','ldt'])
     file_details = {"FileName":'',"FileType":'',"FileSize":''}
     if uploaded_file is not None:
@@ -98,7 +101,7 @@ def load_dataframe():
     st.sidebar.markdown("### Load dataframe:")
     
     # expander with data format options:
-    expdr_dopts = st.sidebar.beta_expander("Data-format options")
+    expdr_dopts = st.sidebar.expander("Data-format options")
     expdr_dopts.checkbox("Column format", True, key = 'options')
     header = 'infer' if expdr_dopts.checkbox("Data file has header", False, key = 'header') else None
     index_col = 0 if expdr_dopts.checkbox("First Column is Index", False, key = 'col_index') else None
@@ -106,7 +109,7 @@ def load_dataframe():
     sep = expdr_dopts.selectbox('Separator',[',','\t',';'])
     
     # expander with data loading:
-    expdr_dload = st.sidebar.beta_expander("Upload DataFrame csv file",True)
+    expdr_dload = st.sidebar.expander("Upload DataFrame csv file",True)
     uploaded_file = expdr_dload.file_uploader("",accept_multiple_files=False,type=['csv','dat','txt'])
     file_details = {"FileName":'',"FileType":'',"FileSize":''}
     if uploaded_file is not None:
@@ -131,7 +134,7 @@ def load_dataframe():
 placeholder_spdselector = None
 def display_spectral_input_data(df, file_details, sidebar = True):
     st.sidebar.markdown('### Input data:')
-    expdr_dshow = st.sidebar.beta_expander('Show input data') if sidebar  else st.expander('Show input data')      
+    expdr_dshow = st.sidebar.expander('Show input data') if sidebar  else st.expander('Show input data')
     display = expdr_dshow.selectbox("Display format", ('Graph','DataFrame'))
 
     expdr_dshow.write(file_details)
@@ -147,7 +150,7 @@ def display_spectral_input_data(df, file_details, sidebar = True):
 placeholder_indexselector = None
 def display_dataframe(df, file_details, sidebar = True):
     st.sidebar.markdown('### Input dataframe:')
-    expdr_dshow = st.sidebar.beta_expander('Show input dataframe') if sidebar  else st.expander('Show input dataframe')      
+    expdr_dshow = st.sidebar.expander('Show input dataframe') if sidebar  else st.expander('Show input dataframe')
     expdr_dshow.write(file_details)
     expdr_dshow.dataframe(df)
 
@@ -437,7 +440,7 @@ def set_up_df_legend(keys):
         cpt.markdown(legend_dict[key])  
         
 def setup_tm30_report_info():
-    expdr_info = st.sidebar.beta_expander('Set additional info for report')
+    expdr_info = st.sidebar.expander('Set additional info for report')
     info = {'manufacturer' : expdr_info.text_input('Manufacturer',''),
             'date' :  expdr_info.text_input('Date',''),
             'model' : expdr_info.text_input('Model',''),
@@ -454,7 +457,6 @@ def setup_colorimetric_info():
 
 class Run:
     def __init__(self, option):
-        
         # load option based settings:
         self.option = option
         self.opt = run_options[self.option][0] # get short name for option

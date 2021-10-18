@@ -2,4 +2,4 @@ numpy
 pandas
 matplotlib
 streamlit
-luxpy==git+https://github.com/holg/luxpy_app/refactor_1.8
+luxpy==git+https://github.com/holg/luxpy.git
