@@ -150,7 +150,7 @@ def load_dataframe():
 placeholder_spdselector = None
 def display_spectral_input_data(df, file_details, sidebar = True):
     st.sidebar.markdown('### Input data:')
-    expdr_dshow = st.sidebar.beta_expander('Show input data') if sidebar  else st.beta_expander('Show input data')      
+    expdr_dshow = st.sidebar.beta_expander('Show input data') if sidebar  else st.expander('Show input data')      
     display = expdr_dshow.selectbox("Display format", ('Graph','DataFrame'))
 
     expdr_dshow.write(file_details)
@@ -167,7 +167,7 @@ def display_spectral_input_data(df, file_details, sidebar = True):
 placeholder_indexselector = None
 def display_dataframe(df, file_details, sidebar = True):
     st.sidebar.markdown('### Input dataframe:')
-    expdr_dshow = st.sidebar.beta_expander('Show input dataframe') if sidebar  else st.beta_expander('Show input dataframe')      
+    expdr_dshow = st.sidebar.beta_expander('Show input dataframe') if sidebar  else st.expander('Show input dataframe')      
     expdr_dshow.write(file_details)
     expdr_dshow.dataframe(df)
 
@@ -484,7 +484,7 @@ run_options = {'' : ('', None, None, False, ''),
                }
 
 def set_up_df_legend(keys):
-    cpt = st.beta_expander('Table legend')
+    cpt = st.expander('Table legend')
     for key in keys:
         cpt.markdown(legend_dict[key])  
         
@@ -542,7 +542,7 @@ class Run:
         if self.opt == 'custom_code':
             st.markdown("**Write and run your own Luxpy code**")
             st.markdown("*Don't know how? Have a look at the FREE (Open Access) [tutorial paper in LEUKOS](https://doi.org/10.1080/15502724.2018.1518717)*")
-            ccode_expdr = st.beta_expander('!!! READ ME !!!')
+            ccode_expdr = st.expander('!!! READ ME !!!')
             ccode_expdr.text("Write your own code in the field below.")
             ccode_expdr.text("""
                              - Uploaded data is available in the variable `data`.
@@ -723,14 +723,14 @@ __results__ = pandas.DataFrame(numpy.vstack((XYZ.T, CCT.T, Duv.T, Yxy[...,1:].T,
                 self.code_example = self.code_example_general
                 self.code_example_basic = self.code_example_basic_general
                 
-            ccode_expr_text_area = st.beta_expander("Enter user code here",True)
+            ccode_expr_text_area = st.expander("Enter user code here",True)
             self.code_example_is_basic = ccode_expr_text_area.checkbox('Show basic (no plots, no legend) code example',True)
             code_example = self.code_example_basic if self.code_example_is_basic else self.code_example
             text_area_height = 200 if self.code_example_is_basic else 300
             self.custom_code = ccode_expr_text_area.text_area("Press ctrl-enter to load code!!!", 
                                                          value = code_example, 
                                                          height = text_area_height)
-            ccode_expr_code = st.beta_expander("Check user code with Python language highlighting",False)
+            ccode_expr_code = st.expander("Check user code with Python language highlighting",False)
             ccode_expr_code.code(self.custom_code)
         
         elif self.opt == 'calc_sherbrooke_spectral_indices':
@@ -790,7 +790,7 @@ __results__ = pandas.DataFrame(numpy.vstack((XYZ.T, CCT.T, Duv.T, Yxy[...,1:].T,
             st.markdown(get_table_download_link_csv(self.df_result), unsafe_allow_html=True)   
 
         if (self.code_example is not None) & (self.opt != 'custom_code'):
-            expdr_code = st.beta_expander('Luxpy Coding Tutorial: show simple code example that generates output',False)
+            expdr_code = st.expander('Luxpy Coding Tutorial: show simple code example that generates output',False)
             expdr_code.code(self.code_example)
  
 def setup_luxpy_info():
